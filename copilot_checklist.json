@@ -1,0 +1,122 @@
+[
+    {
+        "part": "Setup & Licensing",
+        "step": "Initialize Project",
+        "description": "Set up Django + DRF backend and React + TypeScript frontend in a monorepo with Docker. Configure PostgreSQL and Redis services.",
+        "prompt_for_agent": "Initialize a Django project with DRF, a React (Vite + TypeScript + Tailwind + shadcn/ui) frontend, and Docker services for Postgres and Redis. Add base GitHub Actions CI workflow.",
+        "test": "Run docker-compose up and confirm backend (localhost:8000) and frontend (localhost:3000) boot without errors.",
+        "progress_entry": "\u2705 Project skeleton created with Django, React, Docker, Postgres, Redis, and GitHub Actions CI."
+    },
+    {
+        "part": "Setup & Licensing",
+        "step": "Offline License Module",
+        "description": "Implement offline license validation using machine_hash and alphanumeric key. Block all routes until license is valid.",
+        "prompt_for_agent": "Write Django app `licensing` with model License (machine_hash, key, expiry). Middleware should validate on each request. CLI command to generate machine_hash.",
+        "test": "Run pytest: license invalid blocks API calls with 403; valid license allows API calls.",
+        "progress_entry": "\u2705 Licensing module implemented and validated against machine_hash."
+    },
+    {
+        "part": "Backend Development",
+        "step": "Core Models",
+        "description": "Implement models for Tenant, Network, Station, AudienceCategory, ShowCategory, Show, Daypart, RateCard. Use UUID PKs and indexing on tenant_id.",
+        "prompt_for_agent": "Write Django models for Tenant, Network, Station, AudienceCategory, ShowCategory, Show, Daypart, RateCard as defined in project_description.md. Use UUIDs, add FK relations, enforce constraints.",
+        "test": "Run pytest to validate migrations and model constraints. Create sample Station with Show and RateCard.",
+        "progress_entry": "\u2705 Core models implemented and migrated successfully."
+    },
+    {
+        "part": "Backend Development",
+        "step": "Campaign Models",
+        "description": "Implement Campaign, MediaPlan, MediaBrief models with relations to Tenant, Station, Show, AudienceCategory. Add status enum [draft, locked, completed].",
+        "prompt_for_agent": "Write Django models for Campaign, MediaPlan, MediaBrief with UUID PKs, FK to Tenant/Station/Show, status field with choices, and indexing. MediaPlan should include duration_seconds, rate_applied, override_rate, is_bonus.",
+        "test": "Run pytest to validate Campaign and MediaPlan creation. Ensure migrations apply cleanly.",
+        "progress_entry": "\u2705 Campaign and MediaPlan models created and tested."
+    },
+    {
+        "part": "Backend Development",
+        "step": "Monitoring Module",
+        "description": "Implement MonitoringImport and MonitoringEntry models, file upload API, parsing service for CSV/Excel.",
+        "prompt_for_agent": "Write Django models for MonitoringImport and MonitoringEntry. Implement DRF endpoint to upload monitoring reports, parse CSV/Excel, and insert rows.",
+        "test": "Upload sample monitoring file, assert MonitoringEntries created with correct status.",
+        "progress_entry": "\u2705 Monitoring module implemented with import and parsing."
+    },
+    {
+        "part": "Backend Development",
+        "step": "API Development",
+        "description": "Expose CRUD APIs for entities, campaign creation, media plan drafting, bulk spot add, overrides, monitoring import, and performance reporting.",
+        "prompt_for_agent": "Implement DRF viewsets and serializers for all entities. Add endpoints: /api/campaigns, /api/media-plans/bulk, /api/monitoring/import, /api/monitoring/performance.",
+        "test": "Run pytest: CRUD works, bulk media plan API distributes spots correctly, performance endpoint aggregates stats.",
+        "progress_entry": "\u2705 Backend APIs implemented and tested."
+    },
+    {
+        "part": "Backend Development",
+        "step": "Auth & RBAC",
+        "description": "Implement JWT authentication with refresh tokens. Roles: Admin and Planner. Enforce role-based access to APIs.",
+        "prompt_for_agent": "Configure JWT auth in DRF. Create roles Admin and Planner. Use DRF permissions to restrict access: Admin \u2192 licensing, tenants, users, imports. Planner \u2192 campaigns, plans, monitoring.",
+        "test": "Run pytest: Planner blocked from admin routes; Admin allowed. Token expiry/refresh works.",
+        "progress_entry": "\u2705 JWT Auth and RBAC implemented."
+    },
+    {
+        "part": "Frontend Development",
+        "step": "UI Framework Setup",
+        "description": "Set up React + TypeScript with TailwindCSS and shadcn/ui. Add layout, routing, and auth context.",
+        "prompt_for_agent": "Initialize React with Vite, TypeScript, Tailwind, shadcn/ui. Add base layout with sidebar and topbar. Implement login/logout with JWT.",
+        "test": "Start frontend. Confirm login form works and protected routes redirect unauthenticated users.",
+        "progress_entry": "\u2705 Frontend framework initialized with auth flow."
+    },
+    {
+        "part": "Frontend Development",
+        "step": "Entity Management UI",
+        "description": "Create CRUD pages for Stations, Shows, Categories, RateCards. Support batch upload via CSV/Excel.",
+        "prompt_for_agent": "Implement React pages with DataTables for Stations, Shows, Categories, RateCards. Add file upload for batch import.",
+        "test": "Upload sample CSV of stations and confirm they appear in UI.",
+        "progress_entry": "\u2705 Entity management UI completed."
+    },
+    {
+        "part": "Frontend Development",
+        "step": "Campaign Wizard",
+        "description": "Create campaign wizard: 1) Details 2) Assets 3) Plan (Grid) 4) Review & Export 5) Lock.",
+        "prompt_for_agent": "Implement multi-step form wizard for campaigns. Integrate file upload for assets. Final step should call export API and allow lock.",
+        "test": "Run through wizard, create campaign, upload asset, lock plan. Confirm backend updated.",
+        "progress_entry": "\u2705 Campaign wizard completed."
+    },
+    {
+        "part": "Frontend Development",
+        "step": "Show Picker Grid",
+        "description": "Implement grid UI to filter and select shows by Station, Network, ShowCategory, AudienceCategory, Weekday, Daypart.",
+        "prompt_for_agent": "Build React grid with filters (station, network, category, weekday, daypart). Allow multi-select shows, duration input, bulk spot allocation. Call /api/media-plans/bulk.",
+        "test": "Select shows, add bulk spots, confirm spots created in backend.",
+        "progress_entry": "\u2705 Show Picker Grid implemented."
+    },
+    {
+        "part": "Frontend Development",
+        "step": "Monitoring Import UI",
+        "description": "Create page to upload monitoring reports, display parsed results, and performance summaries.",
+        "prompt_for_agent": "Implement file upload form for monitoring reports. Display summary: scheduled, transmitted, missed, gained. Integrate chart for station breakdown.",
+        "test": "Upload sample report, confirm parsed summary matches backend.",
+        "progress_entry": "\u2705 Monitoring import UI implemented."
+    },
+    {
+        "part": "Frontend Development",
+        "step": "Reports & Dashboard",
+        "description": "Build dashboards for campaign KPIs. Add export buttons for PDF/Excel.",
+        "prompt_for_agent": "Create React pages with recharts for campaign KPIs: spots scheduled vs transmitted. Add buttons for PDF/Excel export.",
+        "test": "Open campaign report page, confirm charts and export downloads work.",
+        "progress_entry": "\u2705 Reporting dashboard completed."
+    },
+    {
+        "part": "Testing & CI/CD",
+        "step": "Backend Unit & Integration Tests",
+        "description": "Add pytest coverage for models, APIs, and workflows. Configure CI to run tests on push.",
+        "prompt_for_agent": "Write pytest unit tests for all models and API endpoints. Add integration test: Campaign \u2192 MediaPlan \u2192 MonitoringImport \u2192 Performance. Configure GitHub Actions to run pytest.",
+        "test": "CI run should pass all tests with coverage >= 80%.",
+        "progress_entry": "\u2705 Backend unit/integration tests completed and integrated in CI."
+    },
+    {
+        "part": "Testing & CI/CD",
+        "step": "Frontend Tests",
+        "description": "Add Jest + React Testing Library unit tests. Add Playwright E2E tests for key workflows.",
+        "prompt_for_agent": "Write Jest/RTL tests for components (grids, forms). Add Playwright test: create campaign \u2192 add plan \u2192 lock \u2192 upload monitoring report \u2192 view report.",
+        "test": "Run frontend tests. All pass. Playwright scenario runs end-to-end successfully.",
+        "progress_entry": "\u2705 Frontend tests implemented and passing."
+    }
+]
