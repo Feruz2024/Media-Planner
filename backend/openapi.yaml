@@ -1,0 +1,3413 @@
+openapi: 3.0.3
+info:
+  title: ''
+  version: 0.0.0
+paths:
+  /api/auth/token/:
+    post:
+      operationId: api_auth_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/auth/token/refresh/:
+    post:
+      operationId: api_auth_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/briefs/:
+    get:
+      operationId: api_briefs_list
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: query
+        name: campaign
+        schema:
+          type: string
+          format: uuid
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMediaBriefList'
+          description: ''
+    post:
+      operationId: api_briefs_create
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MediaBrief'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MediaBrief'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MediaBrief'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaBrief'
+          description: ''
+  /api/briefs/{id}/:
+    get:
+      operationId: api_briefs_retrieve
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this media brief.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaBrief'
+          description: ''
+    put:
+      operationId: api_briefs_update
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this media brief.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MediaBrief'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MediaBrief'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MediaBrief'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaBrief'
+          description: ''
+    patch:
+      operationId: api_briefs_partial_update
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this media brief.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMediaBrief'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMediaBrief'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMediaBrief'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaBrief'
+          description: ''
+    delete:
+      operationId: api_briefs_destroy
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this media brief.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/campaigns/:
+    get:
+      operationId: api_campaigns_list
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: query
+        name: end_date
+        schema:
+          type: string
+          format: date
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: start_date
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - active
+          - cancelled
+          - completed
+          - draft
+          - paused
+        description: |-
+          * `draft` - Draft
+          * `active` - Active
+          * `paused` - Paused
+          * `completed` - Completed
+          * `cancelled` - Cancelled
+      - in: query
+        name: tenant
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCampaignList'
+          description: ''
+    post:
+      operationId: api_campaigns_create
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Campaign'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Campaign'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Campaign'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Campaign'
+          description: ''
+  /api/campaigns/{id}/:
+    get:
+      operationId: api_campaigns_retrieve
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this campaign.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Campaign'
+          description: ''
+    put:
+      operationId: api_campaigns_update
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this campaign.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Campaign'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Campaign'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Campaign'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Campaign'
+          description: ''
+    patch:
+      operationId: api_campaigns_partial_update
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this campaign.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCampaign'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCampaign'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCampaign'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Campaign'
+          description: ''
+    delete:
+      operationId: api_campaigns_destroy
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this campaign.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/dayparts/:
+    get:
+      operationId: api_dayparts_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDaypartList'
+          description: ''
+    post:
+      operationId: api_dayparts_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Daypart'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Daypart'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Daypart'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Daypart'
+          description: ''
+  /api/dayparts/{id}/:
+    get:
+      operationId: api_dayparts_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this daypart.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Daypart'
+          description: ''
+    put:
+      operationId: api_dayparts_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this daypart.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Daypart'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Daypart'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Daypart'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Daypart'
+          description: ''
+    patch:
+      operationId: api_dayparts_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this daypart.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDaypart'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDaypart'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDaypart'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Daypart'
+          description: ''
+    delete:
+      operationId: api_dayparts_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this daypart.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/licenses/:
+    get:
+      operationId: api_licenses_list
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLicenseList'
+          description: ''
+    post:
+      operationId: api_licenses_create
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/License'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/License'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/License'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/License'
+          description: ''
+  /api/licenses/{id}/:
+    get:
+      operationId: api_licenses_retrieve
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this license.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/License'
+          description: ''
+    put:
+      operationId: api_licenses_update
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this license.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/License'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/License'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/License'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/License'
+          description: ''
+    patch:
+      operationId: api_licenses_partial_update
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this license.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLicense'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLicense'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLicense'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/License'
+          description: ''
+    delete:
+      operationId: api_licenses_destroy
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this license.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/media-plans/:
+    get:
+      operationId: api_media_plans_list
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: query
+        name: campaign
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: date
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: daypart
+        schema:
+          type: string
+          format: uuid
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: show
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: station
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - accepted
+          - draft
+          - locked
+          - pending
+          - rejected
+        description: |-
+          * `draft` - Draft
+          * `pending` - Pending
+          * `accepted` - Accepted
+          * `locked` - Locked
+          * `rejected` - Rejected
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMediaPlanList'
+          description: ''
+    post:
+      operationId: api_media_plans_create
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MediaPlan'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MediaPlan'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MediaPlan'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaPlan'
+          description: ''
+  /api/media-plans/{id}/:
+    get:
+      operationId: api_media_plans_retrieve
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this media plan.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaPlan'
+          description: ''
+    put:
+      operationId: api_media_plans_update
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this media plan.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MediaPlan'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MediaPlan'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MediaPlan'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaPlan'
+          description: ''
+    patch:
+      operationId: api_media_plans_partial_update
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this media plan.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMediaPlan'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMediaPlan'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMediaPlan'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaPlan'
+          description: ''
+    delete:
+      operationId: api_media_plans_destroy
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this media plan.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/media-plans/bulk/:
+    post:
+      operationId: api_media_plans_bulk_create
+      description: Bulk create media plans (spots) for a campaign.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MediaPlan'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MediaPlan'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MediaPlan'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaPlan'
+          description: ''
+  /api/monitoring-imports/:
+    get:
+      operationId: api_monitoring_imports_list
+      description: Handle raw monitoring file uploads and parse them into MonitoringEntry
+        rows.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - failed
+          - pending
+          - processed
+          - processing
+        description: |-
+          * `pending` - Pending
+          * `processing` - Processing
+          * `processed` - Processed
+          * `failed` - Failed
+      - in: query
+        name: tenant
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMonitoringImportList'
+          description: ''
+    post:
+      operationId: api_monitoring_imports_create
+      description: Handle raw monitoring file uploads and parse them into MonitoringEntry
+        rows.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonitoringImport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MonitoringImport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MonitoringImport'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitoringImport'
+          description: ''
+  /api/monitoring-imports/{id}/:
+    get:
+      operationId: api_monitoring_imports_retrieve
+      description: Handle raw monitoring file uploads and parse them into MonitoringEntry
+        rows.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this monitoring import.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitoringImport'
+          description: ''
+    put:
+      operationId: api_monitoring_imports_update
+      description: Handle raw monitoring file uploads and parse them into MonitoringEntry
+        rows.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this monitoring import.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonitoringImport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MonitoringImport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MonitoringImport'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitoringImport'
+          description: ''
+    patch:
+      operationId: api_monitoring_imports_partial_update
+      description: Handle raw monitoring file uploads and parse them into MonitoringEntry
+        rows.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this monitoring import.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMonitoringImport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMonitoringImport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMonitoringImport'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitoringImport'
+          description: ''
+    delete:
+      operationId: api_monitoring_imports_destroy
+      description: Handle raw monitoring file uploads and parse them into MonitoringEntry
+        rows.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this monitoring import.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/monitoring-imports/upload/:
+    post:
+      operationId: api_monitoring_imports_upload_create
+      description: Accept CSV or XLSX, create a MonitoringImport and parse rows into
+        MonitoringEntry.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonitoringImport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MonitoringImport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MonitoringImport'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitoringImport'
+          description: ''
+  /api/ratecards/:
+    get:
+      operationId: api_ratecards_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRateCardList'
+          description: ''
+    post:
+      operationId: api_ratecards_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RateCard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RateCard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RateCard'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateCard'
+          description: ''
+  /api/ratecards/{id}/:
+    get:
+      operationId: api_ratecards_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this rate card.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateCard'
+          description: ''
+    put:
+      operationId: api_ratecards_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this rate card.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RateCard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RateCard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RateCard'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateCard'
+          description: ''
+    patch:
+      operationId: api_ratecards_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this rate card.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRateCard'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRateCard'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRateCard'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateCard'
+          description: ''
+    delete:
+      operationId: api_ratecards_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this rate card.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/reports/:
+    get:
+      operationId: api_reports_list
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: media_plan
+        schema:
+          type: string
+          format: uuid
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMonitoringReportList'
+          description: ''
+    post:
+      operationId: api_reports_create
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonitoringReport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MonitoringReport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MonitoringReport'
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitoringReport'
+          description: ''
+  /api/reports/{id}/:
+    get:
+      operationId: api_reports_retrieve
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this monitoring report.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitoringReport'
+          description: ''
+    put:
+      operationId: api_reports_update
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this monitoring report.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonitoringReport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MonitoringReport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MonitoringReport'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitoringReport'
+          description: ''
+    patch:
+      operationId: api_reports_partial_update
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this monitoring report.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMonitoringReport'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMonitoringReport'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMonitoringReport'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitoringReport'
+          description: ''
+    delete:
+      operationId: api_reports_destroy
+      description: Mixin to scope queryset by tenant from request.user.tenant or X-Tenant
+        header.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this monitoring report.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/reports/upload/:
+    post:
+      operationId: api_reports_upload_create
+      description: Accept multipart file upload of monitoring report (CSV) and parse
+        basic metrics.
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitoringReportUpload'
+          description: ''
+  /api/schema/:
+    get:
+      operationId: api_schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - ug
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/shows/:
+    get:
+      operationId: api_shows_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedShowList'
+          description: ''
+    post:
+      operationId: api_shows_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Show'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Show'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Show'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Show'
+          description: ''
+  /api/shows/{id}/:
+    get:
+      operationId: api_shows_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this show.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Show'
+          description: ''
+    put:
+      operationId: api_shows_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this show.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Show'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Show'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Show'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Show'
+          description: ''
+    patch:
+      operationId: api_shows_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this show.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedShow'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedShow'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedShow'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Show'
+          description: ''
+    delete:
+      operationId: api_shows_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this show.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/stations/:
+    get:
+      operationId: api_stations_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedStationList'
+          description: ''
+    post:
+      operationId: api_stations_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Station'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Station'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Station'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+          description: ''
+  /api/stations/{id}/:
+    get:
+      operationId: api_stations_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this station.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+          description: ''
+    put:
+      operationId: api_stations_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this station.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Station'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Station'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Station'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+          description: ''
+    patch:
+      operationId: api_stations_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this station.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedStation'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedStation'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedStation'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+          description: ''
+    delete:
+      operationId: api_stations_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this station.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/tenants/:
+    get:
+      operationId: api_tenants_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTenantList'
+          description: ''
+    post:
+      operationId: api_tenants_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tenant'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Tenant'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Tenant'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+          description: ''
+  /api/tenants/{id}/:
+    get:
+      operationId: api_tenants_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this tenant.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+          description: ''
+    put:
+      operationId: api_tenants_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this tenant.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tenant'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Tenant'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Tenant'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+          description: ''
+    patch:
+      operationId: api_tenants_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this tenant.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTenant'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTenant'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTenant'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+          description: ''
+    delete:
+      operationId: api_tenants_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this tenant.
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    Campaign:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        external_id:
+          type: string
+          nullable: true
+          maxLength: 128
+        advertiser_name:
+          type: string
+          nullable: true
+          maxLength: 255
+        target_audience:
+          type: string
+          nullable: true
+          maxLength: 255
+        start_date:
+          type: string
+          format: date
+          nullable: true
+        end_date:
+          type: string
+          format: date
+          nullable: true
+        budget:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          nullable: true
+        status:
+          $ref: '#/components/schemas/CampaignStatusEnum'
+        meta: {}
+        tenant:
+          type: string
+          format: uuid
+      required:
+      - created_at
+      - id
+      - name
+      - tenant
+      - updated_at
+    CampaignStatusEnum:
+      enum:
+      - draft
+      - active
+      - paused
+      - completed
+      - cancelled
+      type: string
+      description: |-
+        * `draft` - Draft
+        * `active` - Active
+        * `paused` - Paused
+        * `completed` - Completed
+        * `cancelled` - Cancelled
+    Daypart:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        start_time:
+          type: string
+          format: time
+        end_time:
+          type: string
+          format: time
+      required:
+      - end_time
+      - id
+      - name
+      - start_time
+    License:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        license_key:
+          type: string
+          maxLength: 255
+        machine_hash:
+          type: string
+          nullable: true
+          maxLength: 255
+        activated_at:
+          type: string
+          format: date-time
+          nullable: true
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+        meta: {}
+        tenant:
+          type: string
+          format: uuid
+      required:
+      - created_at
+      - id
+      - license_key
+      - tenant
+      - updated_at
+    MediaBrief:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        objective:
+          type: string
+        target: {}
+        assets: {}
+        due_date:
+          type: string
+          format: date
+          nullable: true
+        campaign:
+          type: string
+          format: uuid
+        requested_by:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - campaign
+      - created_at
+      - id
+      - updated_at
+    MediaPlan:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_by:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        date:
+          type: string
+          format: date
+          nullable: true
+        spots:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        price_per_spot:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          nullable: true
+        scheduled_at:
+          type: string
+          format: date-time
+          nullable: true
+        notes:
+          type: string
+        status:
+          $ref: '#/components/schemas/MediaPlanStatusEnum'
+        campaign:
+          type: string
+          format: uuid
+        station:
+          type: string
+          format: uuid
+          nullable: true
+        show:
+          type: string
+          format: uuid
+          nullable: true
+        daypart:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - campaign
+      - created_at
+      - created_by
+      - id
+      - name
+      - updated_at
+    MediaPlanStatusEnum:
+      enum:
+      - draft
+      - pending
+      - accepted
+      - locked
+      - rejected
+      type: string
+      description: |-
+        * `draft` - Draft
+        * `pending` - Pending
+        * `accepted` - Accepted
+        * `locked` - Locked
+        * `rejected` - Rejected
+    MonitoringImport:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        entries:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        file:
+          type: string
+          format: uri
+        original_filename:
+          type: string
+          maxLength: 512
+        status:
+          $ref: '#/components/schemas/MonitoringImportStatusEnum'
+        processed_at:
+          type: string
+          format: date-time
+          nullable: true
+        summary:
+          type: string
+        meta: {}
+        tenant:
+          type: string
+          format: uuid
+          nullable: true
+        uploaded_by:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - created_at
+      - entries
+      - file
+      - id
+      - updated_at
+    MonitoringImportStatusEnum:
+      enum:
+      - pending
+      - processing
+      - processed
+      - failed
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `processing` - Processing
+        * `processed` - Processed
+        * `failed` - Failed
+    MonitoringReport:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        file:
+          type: string
+          format: uri
+          nullable: true
+        generated_at:
+          type: string
+          format: date-time
+        uploaded_at:
+          type: string
+          format: date-time
+          readOnly: true
+        metrics: {}
+        summary:
+          type: string
+        media_plan:
+          type: string
+          format: uuid
+          nullable: true
+        campaign:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - created_at
+      - id
+      - updated_at
+      - uploaded_at
+    MonitoringReportUpload:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        campaign:
+          type: string
+          format: uuid
+          nullable: true
+        media_plan:
+          type: string
+          format: uuid
+          nullable: true
+        file:
+          type: string
+          format: uri
+        metrics: {}
+      required:
+      - file
+      - id
+    PaginatedCampaignList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Campaign'
+    PaginatedDaypartList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Daypart'
+    PaginatedLicenseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/License'
+    PaginatedMediaBriefList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaBrief'
+    PaginatedMediaPlanList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaPlan'
+    PaginatedMonitoringImportList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MonitoringImport'
+    PaginatedMonitoringReportList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MonitoringReport'
+    PaginatedRateCardList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RateCard'
+    PaginatedShowList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Show'
+    PaginatedStationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Station'
+    PaginatedTenantList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tenant'
+    PatchedCampaign:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        external_id:
+          type: string
+          nullable: true
+          maxLength: 128
+        advertiser_name:
+          type: string
+          nullable: true
+          maxLength: 255
+        target_audience:
+          type: string
+          nullable: true
+          maxLength: 255
+        start_date:
+          type: string
+          format: date
+          nullable: true
+        end_date:
+          type: string
+          format: date
+          nullable: true
+        budget:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          nullable: true
+        status:
+          $ref: '#/components/schemas/CampaignStatusEnum'
+        meta: {}
+        tenant:
+          type: string
+          format: uuid
+    PatchedDaypart:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        start_time:
+          type: string
+          format: time
+        end_time:
+          type: string
+          format: time
+    PatchedLicense:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        license_key:
+          type: string
+          maxLength: 255
+        machine_hash:
+          type: string
+          nullable: true
+          maxLength: 255
+        activated_at:
+          type: string
+          format: date-time
+          nullable: true
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+        meta: {}
+        tenant:
+          type: string
+          format: uuid
+    PatchedMediaBrief:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        objective:
+          type: string
+        target: {}
+        assets: {}
+        due_date:
+          type: string
+          format: date
+          nullable: true
+        campaign:
+          type: string
+          format: uuid
+        requested_by:
+          type: string
+          format: uuid
+          nullable: true
+    PatchedMediaPlan:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_by:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        date:
+          type: string
+          format: date
+          nullable: true
+        spots:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        price_per_spot:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          nullable: true
+        scheduled_at:
+          type: string
+          format: date-time
+          nullable: true
+        notes:
+          type: string
+        status:
+          $ref: '#/components/schemas/MediaPlanStatusEnum'
+        campaign:
+          type: string
+          format: uuid
+        station:
+          type: string
+          format: uuid
+          nullable: true
+        show:
+          type: string
+          format: uuid
+          nullable: true
+        daypart:
+          type: string
+          format: uuid
+          nullable: true
+    PatchedMonitoringImport:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        entries:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        file:
+          type: string
+          format: uri
+        original_filename:
+          type: string
+          maxLength: 512
+        status:
+          $ref: '#/components/schemas/MonitoringImportStatusEnum'
+        processed_at:
+          type: string
+          format: date-time
+          nullable: true
+        summary:
+          type: string
+        meta: {}
+        tenant:
+          type: string
+          format: uuid
+          nullable: true
+        uploaded_by:
+          type: string
+          format: uuid
+          nullable: true
+    PatchedMonitoringReport:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        file:
+          type: string
+          format: uri
+          nullable: true
+        generated_at:
+          type: string
+          format: date-time
+        uploaded_at:
+          type: string
+          format: date-time
+          readOnly: true
+        metrics: {}
+        summary:
+          type: string
+        media_plan:
+          type: string
+          format: uuid
+          nullable: true
+        campaign:
+          type: string
+          format: uuid
+          nullable: true
+    PatchedRateCard:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        currency:
+          type: string
+          maxLength: 3
+        station:
+          type: string
+          format: uuid
+        show:
+          type: string
+          format: uuid
+          nullable: true
+        daypart:
+          type: string
+          format: uuid
+    PatchedShow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        default_dayparts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Daypart'
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        genre:
+          type: string
+          nullable: true
+          maxLength: 100
+        station:
+          type: string
+          format: uuid
+    PatchedStation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        shows:
+          type: array
+          items:
+            $ref: '#/components/schemas/Show'
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+        region:
+          type: string
+          nullable: true
+          maxLength: 255
+        contact_info: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        tenant:
+          type: string
+          format: uuid
+    PatchedTenant:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        license_key:
+          type: string
+          nullable: true
+          maxLength: 255
+        settings: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    RateCard:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        currency:
+          type: string
+          maxLength: 3
+        station:
+          type: string
+          format: uuid
+        show:
+          type: string
+          format: uuid
+          nullable: true
+        daypart:
+          type: string
+          format: uuid
+      required:
+      - daypart
+      - id
+      - price
+      - station
+    Show:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        default_dayparts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Daypart'
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        genre:
+          type: string
+          nullable: true
+          maxLength: 100
+        station:
+          type: string
+          format: uuid
+      required:
+      - default_dayparts
+      - id
+      - name
+      - station
+    Station:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        shows:
+          type: array
+          items:
+            $ref: '#/components/schemas/Show'
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+        region:
+          type: string
+          nullable: true
+          maxLength: 255
+        contact_info: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        tenant:
+          type: string
+          format: uuid
+      required:
+      - created_at
+      - id
+      - name
+      - shows
+      - tenant
+      - type
+      - updated_at
+    Tenant:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        license_key:
+          type: string
+          nullable: true
+          maxLength: 255
+        settings: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - name
+      - updated_at
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TypeEnum:
+      enum:
+      - TV
+      - Radio
+      type: string
+      description: |-
+        * `TV` - TV
+        * `Radio` - Radio
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

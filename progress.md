@@ -36,3 +36,20 @@ This document tracks the progress of the Media Advertising Campaign Planning Sys
 **Next Steps**: Implement core models (Campaign, MediaPlan, MediaBrief, MonitoringReport, License), generate migrations, and add DRF endpoints. Then scaffold frontend and OpenAPI spec.
 **Owner**: Backend Developer
 
+
+### [Date: 2025-09-06]
+
+**Task**: Generated OpenAPI schema for backend API
+**Status**: Completed
+**Details**: Added `drf-spectacular` and generated `backend/openapi.yaml` containing API definitions for campaigns, media-plans, monitoring imports/reports, auth, and related resources. Minor warnings emitted during generation about un-annotated serializer method fields (non-blocking).
+**Next Steps**: Review the schema for any custom field annotations, add examples to critical endpoints (monitoring import upload), and commit `openapi.yaml` to the repository.
+**Owner**: Backend Developer
+
+### [Date: 2025-09-06]
+
+**Task**: Scaffold per-tenant licensing app
+**Status**: In Progress
+**Details**: Added a new `licenses` Django app with a `License` model, admin registration, serializers, activation endpoint (`POST /api/licenses/activate/`), a simple machine hash utility, middleware to enforce active tenant license, and initial unit tests. Migration file `licenses/migrations/0001_initial.py` was generated.
+**Next Steps**: Apply migrations (requires DB connectivity), implement robust signed token verification (replace JSON token placeholder), add management command to export activation requests, and add CI to run tests.
+**Owner**: Backend Developer
+
