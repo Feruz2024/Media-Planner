@@ -73,6 +73,9 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/media_planner
           DJANGO_SETTINGS_MODULE: config.settings
+          # Configure license verification for RS256 in CI from repo secrets
+          LICENSE_TOKEN_ALGORITHM: 'RS256'
+          LICENSE_PUBLIC_KEY: ${{ secrets.LICENSE_PUBLIC_KEY }}
         run: |
           pushd backend
           python manage.py migrate --noinput
