@@ -58,16 +58,11 @@ pushd backend; python manage.py test; popd
 ```
 
 CI-friendly tests and RS256 notes
---------------------------------
 
 We support two quick test modes for CI and local developers:
-
 - Fast unit tests (default CI job): run with an in-memory SQLite DB using `config.test_settings`. This exercises most business logic (including license verification) without requiring Postgres.
 - Integration tests (optional CI job): run against a Postgres service (via Docker action services) to run migrations and DB-dependent tests.
 
-How to run fast tests locally (recommended for quick feedback):
-
-```powershell
 $env:DJANGO_SETTINGS_MODULE='config.test_settings'
 python -m django test -v 2
 ```
@@ -75,11 +70,35 @@ python -m django test -v 2
 RS256 tests
 -----------
 
-RS256 tests require Python cryptography support (the `cryptography` package) so PyJWT can use PEM keys. For developer convenience we include a dev RSA keypair under `backend/licenses/keys/` used only for local/dev testing. In CI we install `cryptography` so RS256 tests can run in the pipeline.
 
 If your environment lacks `cryptography`, RS256 unit tests will be skipped to avoid false negatives. To enable RS256 tests locally, install the project requirements listed in `backend/requirements.txt` (or pip install `cryptography` directly).
 
+We recommend NOT committing private or production keys to the repository. Instead:
 
+- Store the public key (PEM) in CI as a secret and expose it to the test job as the environment variable `LICENSE_PUBLIC_KEY` (the full PEM string) or provide a file path via `LICENSE_PUBLIC_KEY_PATH`.
+- For local developer convenience you can generate a short-lived dev keypair, but treat the private key as sensitive and keep it outside the repo.
+
+How to generate a local dev keypair (optional):
+
+```powershell
+# generate 2048-bit RSA key (dev)
+openssl genpkey -algorithm RSA -out ~/.local-keys/dev_private.pem -pkeyopt rsa_keygen_bits:2048
+openssl rsa -in ~/.local-keys/dev_private.pem -pubout -out ~/.local-keys/dev_public.pem
+```
+
+Set the public key for local testing by exporting the PEM (or pointing to the path):
+
+```powershell
+
+
+```
+
+Test configuration and CI
+
+- `backend/config/test_settings.py` will still use HS256 by default for fast unit tests. When CI runs RS256 tests, set `LICENSE_TOKEN_ALGORITHM=RS256` and provide `LICENSE_PUBLIC_KEY` in the workflow's environment.
+- If you set `LICENSE_PUBLIC_KEY_PATH`, the application will read the file contents automatically. This permits mounting the key file from a secrets store in CI.
+
+This approach keeps private keys out of source control and lets CI/ops manage production-like keys securely.
 Useful tips
 - To run Celery in 'eager' mode for tests, set `CELERY_TASK_ALWAYS_EAGER=True` in your test settings.
 - For local S3 emulation we use MinIO; access console at `http://localhost:9001` (default creds from `.env`).

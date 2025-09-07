@@ -30,7 +30,17 @@ def verify_activation_token(token: str, expected_machine_hash: str | None = None
     Returns the decoded payload or raises ValueError.
     """
     algo = getattr(settings, 'LICENSE_TOKEN_ALGORITHM', 'HS256')
-    key = getattr(settings, 'LICENSE_PUBLIC_KEY', None)
+    key_setting = getattr(settings, 'LICENSE_PUBLIC_KEY', None)
+
+    # If settings contains a path to a key file, prefer reading the file.
+    key = None
+    if key_setting:
+        # treat as file path if it looks like one
+        if isinstance(key_setting, str) and os.path.exists(key_setting):
+            with open(key_setting, 'r', encoding='utf-8') as f:
+                key = f.read()
+        else:
+            key = key_setting
 
     try:
         if algo.upper().startswith('HS'):
