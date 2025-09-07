@@ -76,6 +76,12 @@ jobs:
           # Configure license verification for RS256 in CI from repo secrets
           LICENSE_TOKEN_ALGORITHM: 'RS256'
           LICENSE_PUBLIC_KEY: ${{ secrets.LICENSE_PUBLIC_KEY }}
+      - name: Verify LICENSE_PUBLIC_KEY secret present
+        run: |
+          if [ -z "${{ secrets.LICENSE_PUBLIC_KEY }}" ]; then
+            echo "ERROR: LICENSE_PUBLIC_KEY secret is not set. Set it in repository Settings → Secrets to run RS256 tests." >&2
+            exit 1
+          fi
         run: |
           pushd backend
           python manage.py migrate --noinput
