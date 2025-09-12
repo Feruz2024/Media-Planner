@@ -70,7 +70,14 @@ CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default='redis://redis:6379
 
 
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='postgresql://media_user:media_pass@postgres:5432/media_planner')
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'Media Planner',
+        'USER': 'postgres',
+        'PASSWORD': 'Fera2014',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
 }
 
 AUTH_USER_MODEL = 'users.User'

@@ -8,10 +8,12 @@ from .serializers import LicenseSerializer, LicenseActivateSerializer
 from .lib import verify_activation_token, get_machine_hash
 
 
+from planner.permissions import IsTenantAdmin
+
 class LicenseViewSet(viewsets.ModelViewSet):
     queryset = License.objects.all()
     serializer_class = LicenseSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsTenantAdmin]
 
     def get_queryset(self):
         # tenant-scoped: only licenses for the user's tenant

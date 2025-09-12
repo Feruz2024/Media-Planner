@@ -1,3 +1,40 @@
+# --- Core Entities from project_description.md ---
+
+from django.db import models
+import uuid
+
+class Network(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+class ShowCategory(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+class AudienceCategory(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+class SponsorshipPrice(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    show = models.ForeignKey('stations.Show', on_delete=models.CASCADE)
+    block_length = models.IntegerField(help_text="Block length in minutes")
+    price = models.DecimalField(max_digits=12, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.show.name} {self.block_length}min {self.price}"
 import uuid
 from django.db import models
 from django.conf import settings
@@ -36,7 +73,7 @@ class Campaign(TimestampedModel):
         indexes = [models.Index(fields=['tenant', 'start_date', 'end_date'])]
 
     def __str__(self):
-        return f"{self.name} ({self.tenant_id})"
+        return f"{self.name} ({self.tenant})"
 
 
 class MediaPlan(TimestampedModel):
@@ -96,7 +133,7 @@ class MonitoringReport(TimestampedModel):
         indexes = [models.Index(fields=['media_plan', 'generated_at'])]
 
     def __str__(self):
-        return f"Report {self.id} for {self.media_plan_id}"
+        return f"Report {self.id} for {self.media_plan}"
 
 
 class License(TimestampedModel):
@@ -114,7 +151,7 @@ class License(TimestampedModel):
         return self.activated_at is not None
 
     def __str__(self):
-        return f"License {self.license_key} for {self.tenant_id}"
+        return f"License {self.license_key} for {self.tenant}"
 
 
 class MonitoringImport(TimestampedModel):
@@ -171,4 +208,4 @@ class MonitoringEntry(TimestampedModel):
         indexes = [models.Index(fields=['tenant', 'campaign', 'media_plan', 'processed'])]
 
     def __str__(self):
-        return f"Entry {self.id} import={self.monitoring_import_id} spots={self.spots_aired}"
+        return f"Entry {self.id} import={self.monitoring_import} spots={self.spots_aired}"

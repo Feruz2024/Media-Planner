@@ -37,6 +37,15 @@ This document tracks the progress of the Media Advertising Campaign Planning Sys
 **Owner**: Backend Developer
 
 
+
+### [Date: 2025-09-12]
+
+**Task**: Completed RBAC audit, backend tests, and API documentation
+**Status**: Completed
+**Details**: Audited and enforced DRF permissions for all entities (tenants, stations, shows, dayparts, ratecards, licenses, planner entities). Added and verified backend RBAC and JWT tests for all endpoints. Generated and reviewed OpenAPI documentation (`backend/openapi.yaml`) covering all endpoints, request/response formats, and required permissions. All tests pass and documentation is ready for frontend integration.
+**Next Steps**: Share OpenAPI spec with frontend team, update documentation as new endpoints or permission changes are made.
+**Owner**: Backend Developer
+
 ### [Date: 2025-09-06]
 
 **Task**: Generated OpenAPI schema for backend API

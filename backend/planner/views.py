@@ -1,11 +1,35 @@
+from . import models, serializers
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework import viewsets, permissions
-from . import models, serializers
+
 from .permissions import IsTenantMember, IsTenantAdmin
+
+
+class NetworkViewSet(viewsets.ModelViewSet):
+    queryset = models.Network.objects.all()
+    serializer_class = serializers.NetworkSerializer
+    permission_classes = [permissions.IsAuthenticated, IsTenantMember]
+
+class ShowCategoryViewSet(viewsets.ModelViewSet):
+    queryset = models.ShowCategory.objects.all()
+    serializer_class = serializers.ShowCategorySerializer
+    permission_classes = [permissions.IsAuthenticated, IsTenantMember]
+
+class AudienceCategoryViewSet(viewsets.ModelViewSet):
+    queryset = models.AudienceCategory.objects.all()
+    serializer_class = serializers.AudienceCategorySerializer
+    permission_classes = [permissions.IsAuthenticated, IsTenantMember]
+
+class SponsorshipPriceViewSet(viewsets.ModelViewSet):
+    queryset = models.SponsorshipPrice.objects.all()
+    serializer_class = serializers.SponsorshipPriceSerializer
+    permission_classes = [permissions.IsAuthenticated, IsTenantMember]
+
+
+
 
 
 class TenantScopedMixin:

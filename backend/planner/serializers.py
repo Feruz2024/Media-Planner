@@ -1,6 +1,28 @@
 from rest_framework import serializers
 from . import models
 
+class NetworkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Network
+        fields = '__all__'
+
+class ShowCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ShowCategory
+        fields = '__all__'
+
+class AudienceCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.AudienceCategory
+        fields = '__all__'
+
+class SponsorshipPriceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.SponsorshipPrice
+        fields = '__all__'
+
+
+
 
 class CampaignSerializer(serializers.ModelSerializer):
     class Meta:

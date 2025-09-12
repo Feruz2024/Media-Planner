@@ -1,4 +1,13 @@
+
 # Development Guide — Media Planner
+
+## Recent Backend Progress (2025-09-12)
+
+- All DRF permissions have been audited and enforced for tenants, stations, shows, dayparts, ratecards, licenses, and planner entities.
+- Backend RBAC and JWT tests are implemented and passing for all endpoints.
+- OpenAPI documentation (`backend/openapi.yaml`) is generated and up-to-date, covering all endpoints, request/response formats, and required permissions.
+- To view or share API docs, use Swagger UI or Redoc with the OpenAPI file.
+
 
 This guide shows how to run the project locally for development using Docker Compose and the local Python environment.
 
@@ -131,20 +140,24 @@ curl -X POST 'http://localhost:8000/api/licenses/activate/' -H 'Content-Type: ap
 Dev RSA key handling (RS256 tests)
 ---------------------------------
 
-For convenience a development RSA keypair is included at `backend/licenses/keys/dev_private.pem` and `backend/licenses/keys/dev_public.pem`. These are intended for local development and test runs only. Recommended practices:
+Dev RSA key handling (RS256 tests)
+---------------------------------
 
-- Keep the dev keypair for local dev to make it easy to sign/verify RS256 activation tokens.
-- For CI, install `cryptography` so the RS256 tests can run against the committed dev public key, or (more secure) store production-like keys in CI secrets and reference them in the workflow.
-- To regenerate a dev keypair locally:
+Recommended practices:
+- Do NOT commit private or production keys to the repository.
+- For CI, store the public key (PEM) in repository secrets and reference it in the workflow as `LICENSE_PUBLIC_KEY`.
+- For local development, generate your own dev keypair and keep the private key outside the repo. Example:
 
 ```powershell
 # generate 2048-bit RSA key (dev)
-openssl genpkey -algorithm RSA -out backend/licenses/keys/dev_private.pem -pkeyopt rsa_keygen_bits:2048
-openssl rsa -in backend/licenses/keys/dev_private.pem -pubout -out backend/licenses/keys/dev_public.pem
+openssl genpkey -algorithm RSA -out ~/.local-keys/dev_private.pem -pkeyopt rsa_keygen_bits:2048
+openssl rsa -in ~/.local-keys/dev_private.pem -pubout -out ~/.local-keys/dev_public.pem
 ```
 
-- To enable RS256 tests locally, ensure your Python env has `cryptography` installed (pip install cryptography) and run the tests with `DJANGO_SETTINGS_MODULE=config.test_settings`.
+- To enable RS256 tests locally, ensure your Python env has `cryptography` installed (`pip install cryptography`) and run the tests with `DJANGO_SETTINGS_MODULE=config.test_settings`.
+- Add `backend/licenses/keys/` to `.gitignore` to prevent accidental commits of key files.
 
-If you'd prefer not to commit private keys to the repository, move the keys into a secure location and add `backend/licenses/keys/` to `.gitignore`, and update `DEVELOPMENT.md` to instruct devs to generate their own keypair before running RS256 tests.
-
-
+Dependency management
+---------------------
+- All Python dependencies should be listed in `backend/requirements.txt`.
+- Remove any unused or duplicate requirements files from the repo root.
