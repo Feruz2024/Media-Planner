@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  fast-tests:
+    name: Fast tests (sqlite)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/backend/requirements.txt') }}
+      - name: Install system deps
+        run: sudo apt-get update && sudo apt-get install -y libpq-dev build-essential
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+      - name: Run tests (sqlite in-memory)
+        env:
+          DJANGO_SETTINGS_MODULE: config.test_settings
+        run: |
+          pushd backend
+          python -m django test -v 2
+          popd
+
+  integration-tests:
+    name: Integration tests (Postgres)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: media_planner
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd "pg_isready -U postgres -d media_planner" --health-interval 10s --health-timeout 5s --health-retries 5
+    needs: fast-tests
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/backend/requirements.txt') }}
+      - name: Install system deps
+        run: sudo apt-get update && sudo apt-get install -y libpq-dev build-essential
+      - name: Install Python deps
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/media_planner
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+      - name: Verify LICENSE_PUBLIC_KEY secret present
+        run: |
+          if [ -z "${{ secrets.LICENSE_PUBLIC_KEY }}" ]; then
+            echo "ERROR: LICENSE_PUBLIC_KEY secret is not set. Set it in repository Settings → Secrets to run RS256 tests." >&2
+            exit 1
+          fi
+
+      - name: Run migrations and tests
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/media_planner
+          DJANGO_SETTINGS_MODULE: config.settings
+          # Configure license verification for RS256 in CI from repo secrets
+          LICENSE_TOKEN_ALGORITHM: 'RS256'
+          LICENSE_PUBLIC_KEY: ${{ secrets.LICENSE_PUBLIC_KEY }}
+        run: |
+          pushd backend
+          python manage.py migrate --noinput
+          python -m django test -v 2
+          popd

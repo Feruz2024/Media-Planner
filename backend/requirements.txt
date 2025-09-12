@@ -2,9 +2,13 @@ Django>=4.2
 psycopg[binary]
 djangorestframework
 djangorestframework-simplejwt
+drf-spectacular
 python-dotenv
+PyJWT
+cryptography
 gunicorn
 django-environ
 django-cors-headers
 celery[redis]
 redis
+django-filter

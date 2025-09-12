@@ -23,11 +23,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'drf_spectacular',
     'corsheaders',
 
     'users',
     'tenants',
     'stations',
+    'licenses',
+    'planner',
 ]
 
 MIDDLEWARE = [
@@ -38,6 +41,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'licenses.middleware.LicenseEnforceMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -60,6 +64,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# Celery settings (simple defaults for local/dev)
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='redis://redis:6379/0')
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND', default='redis://redis:6379/0')
+
+
 DATABASES = {
     'default': env.db('DATABASE_URL', default='postgresql://media_user:media_pass@postgres:5432/media_planner')
 }
@@ -70,6 +79,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    # Use drf-spectacular for OpenAPI generation
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 25,
 }
@@ -82,3 +93,10 @@ SIMPLE_JWT = {
 STATIC_URL = '/static/'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Directory used by simple utilities (machine id file, temporary storage)
+DATA_DIR = env('DATA_DIR', default=str(BASE_DIR / 'data'))
+
+# Licensing config
+LICENSE_PUBLIC_KEY = env('LICENSE_PUBLIC_KEY', default='')
+LICENSE_TOKEN_ALGORITHM = env('LICENSE_TOKEN_ALGORITHM', default='HS256')
